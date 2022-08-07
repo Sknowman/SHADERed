@@ -26,6 +26,8 @@ namespace ed {
 			m_curState.FrameIndex = 0;
 			m_curState.IsPicked = false;
 			m_curState.WASD = glm::vec4(0, 0, 0, 0);
+			m_curState.Fov = 45.0f;
+			m_curState.NearFar = glm::vec2(0.1f, 1000.0f);
 			m_curState.Viewport = glm::vec2(0, 1);
 			m_curState.MousePosition = glm::vec2(0, 0);
 			m_curState.DeltaTime = 0.0f;
@@ -46,6 +48,8 @@ namespace ed {
 			case ed::SystemShaderVariable::FrameIndex: return ed::ShaderVariable::ValueType::Integer1;
 			case ed::SystemShaderVariable::View: return ed::ShaderVariable::ValueType::Float4x4;
 			case ed::SystemShaderVariable::ViewportSize: return ed::ShaderVariable::ValueType::Float2;
+			case ed::SystemShaderVariable::Fov: return ed::ShaderVariable::ValueType::Float1;
+			case ed::SystemShaderVariable::NearFar: return ed::ShaderVariable::ValueType::Float2;
 			case ed::SystemShaderVariable::ViewProjection: return ed::ShaderVariable::ValueType::Float4x4;
 			case ed::SystemShaderVariable::Orthographic: return ed::ShaderVariable::ValueType::Float4x4;
 			case ed::SystemShaderVariable::ViewOrthographic: return ed::ShaderVariable::ValueType::Float4x4;
@@ -71,12 +75,14 @@ namespace ed {
 
 		inline Camera* GetCamera() { return Settings::Instance().Project.FPCamera ? (Camera*)&m_curState.FPCam : (Camera*)&m_curState.ArcCam; }
 		inline glm::mat4 GetViewMatrix() { return Settings::Instance().Project.FPCamera ? m_curState.FPCam.GetMatrix() : m_curState.ArcCam.GetMatrix(); }
-		inline glm::mat4 GetProjectionMatrix() { return glm::perspective(glm::radians(45.0f), m_curState.Viewport.x / m_curState.Viewport.y, 0.1f, 1000.0f); }
-		inline glm::mat4 GetOrthographicMatrix() { return glm::ortho(0.0f, m_curState.Viewport.x, m_curState.Viewport.y, 0.0f, 0.1f, 1000.0f); }
+		inline glm::mat4 GetProjectionMatrix() { return glm::perspective(glm::radians(m_curState.Fov), m_curState.Viewport.x / m_curState.Viewport.y, m_curState.NearFar.x, m_curState.NearFar.y); }
+		inline glm::mat4 GetOrthographicMatrix() { return glm::ortho(0.0f, m_curState.Viewport.x, m_curState.Viewport.y, 0.0f, m_curState.NearFar.x, m_curState.NearFar.y); }
 		inline glm::mat4 GetViewProjectionMatrix() { return GetProjectionMatrix() * GetViewMatrix(); }
 		inline glm::mat4 GetViewOrthographicMatrix() { return GetOrthographicMatrix() * GetViewMatrix(); }
 		inline const glm::mat4& GetGeometryTransform(PipelineItem* item) { return m_curGeoTransform[item]; }
 		inline const glm::vec2& GetViewportSize() { return m_curState.Viewport; }
+		inline float GetFov() { return m_curState.Fov; }
+		inline const glm::vec2& GetNearFar() { return m_curState.NearFar; }
 		inline const glm::ivec4& GetKeysWASD() { return m_curState.WASD; }
 		inline const glm::vec2& GetMousePosition() { return m_curState.MousePosition; }
 		inline const glm::vec4& GetMouse() { return m_curState.Mouse; }
@@ -100,6 +106,10 @@ namespace ed {
 		inline void SetTimeDelta(float x) { m_curState.DeltaTime = x; }
 		inline void SetPicked(bool picked) { m_curState.IsPicked = picked; }
 		inline void SetKeysWASD(int w, int a, int s, int d) { m_curState.WASD = glm::ivec4(w, a, s, d); }
+		inline void SetFov(float fov) { m_curState.Fov = fov; }
+		inline void SetNear(float n) { m_curState.NearFar.x = n; }
+		inline void SetFar(float f) { m_curState.NearFar.y = f; }
+		inline void SetFovNearFar(float fov, float n, float f) { m_curState.Fov = fov;	m_curState.NearFar = glm::vec2(n, f); }
 		inline void SetFrameIndex(unsigned int ind) { m_curState.FrameIndex = ind; }
 		inline void SetSavingToFile(bool isSaving) { m_curState.IsSavingToFile = isSaving; }
 		inline void SetPickPosition(const glm::vec3& pos) { m_curState.PickPosition = pos; }
@@ -115,7 +125,9 @@ namespace ed {
 			float DeltaTime;
 			ArcBallCamera ArcCam;
 			FirstPersonCamera FPCam;
-			glm::vec2 Viewport, MousePosition;
+			float Fov; // fov degrees
+			glm::vec2 NearFar;
+			glm::vec2 Viewport, MousePosition;			
 			bool IsPicked;
 			bool IsSavingToFile;
 			unsigned int FrameIndex;

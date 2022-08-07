@@ -1,4 +1,5 @@
 #include <SHADERed/Objects/Names.h>
+#include <SHADERed/Objects/ShaderVariable.h>
 #ifdef _WIN32
 #include <windows.h>
 #endif
@@ -31,11 +32,15 @@ const unsigned char TOPOLOGY_IS_STRIP[] = {
 	0, 0, 0, 1, 0, 2, 0, 1, 0, 2, 0
 };
 
-const char* SYSTEM_VARIABLE_NAMES[] = {
+// make sure these are equal at compile time
+static_assert(static_cast<unsigned long long>(ed::SystemShaderVariable::Count) == 24, "SystemShaderVariable names not updated");
+const char* SYSTEM_VARIABLE_NAMES[static_cast<unsigned long long>(ed::SystemShaderVariable::Count)] = {
 	"--NONE--",
 	"Time",
 	"TimeDelta",
 	"FrameIndex",
+	"Fov",
+	"NearFar",
 	"ViewportSize",
 	"MousePosition",
 	"View",

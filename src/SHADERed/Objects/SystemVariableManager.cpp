@@ -51,6 +51,13 @@ namespace ed {
 				case ed::SystemShaderVariable::ViewportSize:
 					memcpy(var->Data, glm::value_ptr(GetViewportSize()), sizeof(glm::vec2));
 					break;
+				case ed::SystemShaderVariable::Fov: {
+					float fov = GetFov();
+					memcpy(var->Data, &fov, sizeof(float));
+					} break;
+				case ed::SystemShaderVariable::NearFar:
+					memcpy(var->Data, glm::value_ptr(GetNearFar()), sizeof(glm::vec2));
+					break;
 				case ed::SystemShaderVariable::MousePosition:
 					memcpy(var->Data, glm::value_ptr(GetMousePosition()), sizeof(glm::vec2));
 					break;
@@ -107,23 +114,23 @@ namespace ed {
 					memcpy(var->Data, glm::value_ptr(rawMatrix), sizeof(glm::mat4));
 					break;
 				case ed::SystemShaderVariable::Projection:
-					rawMatrix = glm::perspective(glm::radians(45.0f), m_prevState.Viewport.x / m_prevState.Viewport.y, 0.1f, 1000.0f);
+					rawMatrix = glm::perspective(glm::radians(m_prevState.Fov), m_prevState.Viewport.x / m_prevState.Viewport.y, m_prevState.NearFar.x, m_prevState.NearFar.y);
 					memcpy(var->Data, glm::value_ptr(rawMatrix), sizeof(glm::mat4));
 					break;
 				case ed::SystemShaderVariable::ViewProjection: {
 					glm::mat4 view = Settings::Instance().Project.FPCamera ? m_prevState.FPCam.GetMatrix() : m_prevState.ArcCam.GetMatrix();
-					glm::mat4 persp = glm::perspective(glm::radians(45.0f), m_prevState.Viewport.x / m_prevState.Viewport.y, 0.1f, 1000.0f);
+					glm::mat4 persp = glm::perspective(glm::radians(m_prevState.Fov), m_prevState.Viewport.x / m_prevState.Viewport.y, m_prevState.NearFar.x, m_prevState.NearFar.y);
 
 					rawMatrix = persp * view;
 					memcpy(var->Data, glm::value_ptr(rawMatrix), sizeof(glm::mat4));
 				} break;
 				case ed::SystemShaderVariable::Orthographic:
-					rawMatrix = glm::ortho(0.0f, m_prevState.Viewport.x, m_prevState.Viewport.y, 0.0f, 0.1f, 1000.0f);
+					rawMatrix = glm::ortho(0.0f, m_prevState.Viewport.x, m_prevState.Viewport.y, 0.0f, m_prevState.NearFar.x, m_prevState.NearFar.y);
 					memcpy(var->Data, glm::value_ptr(rawMatrix), sizeof(glm::mat4));
 					break;
 				case ed::SystemShaderVariable::ViewOrthographic: {
 					glm::mat4 view = Settings::Instance().Project.FPCamera ? m_prevState.FPCam.GetMatrix() : m_prevState.ArcCam.GetMatrix();
-					glm::mat4 ortho = glm::ortho(0.0f, m_prevState.Viewport.x, m_prevState.Viewport.y, 0.0f, 0.1f, 1000.0f);
+					glm::mat4 ortho = glm::ortho(0.0f, m_prevState.Viewport.x, m_prevState.Viewport.y, 0.0f, m_prevState.NearFar.x, m_prevState.NearFar.y);
 					rawMatrix = ortho * view;
 					memcpy(var->Data, glm::value_ptr(rawMatrix), sizeof(glm::mat4));
 				} break;
@@ -132,6 +139,13 @@ namespace ed {
 					break;
 				case ed::SystemShaderVariable::ViewportSize:
 					memcpy(var->Data, glm::value_ptr(m_prevState.Viewport), sizeof(glm::vec2));
+					break;
+				case ed::SystemShaderVariable::Fov: {
+					float fov = m_prevState.Fov;
+					memcpy(var->Data, &fov, sizeof(float));
+				} break;
+				case ed::SystemShaderVariable::NearFar:
+					memcpy(var->Data, glm::value_ptr(m_prevState.NearFar), sizeof(glm::vec2));
 					break;
 				case ed::SystemShaderVariable::MousePosition:
 					memcpy(var->Data, glm::value_ptr(m_prevState.MousePosition), sizeof(glm::vec2));
@@ -198,6 +212,10 @@ namespace ed {
 			return SystemShaderVariable::FrameIndex;
 		else if (vname.find("size") != std::string::npos || vname.find("window") != std::string::npos || vname.find("viewport") != std::string::npos || vname.find("resolution") != std::string::npos || vname.find("res") != std::string::npos)
 			return SystemShaderVariable::ViewportSize;
+		else if (vname.find("fov") != std::string::npos)
+			return SystemShaderVariable::Fov;
+		else if (vname.find("near") != std::string::npos || vname.find("far") != std::string::npos)
+			return SystemShaderVariable::NearFar;
 		else if (vname.find("mouse") != std::string::npos || vname == "mpos")
 			return SystemShaderVariable::MousePosition;
 		else if (vname == "view" || vname == "matview" || vname == "matv" || vname == "mview")
