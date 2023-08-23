@@ -1,5 +1,6 @@
 #include <SHADERed/Objects/Names.h>
 #include <SHADERed/Objects/ShaderVariable.h>
+#include <SHADERed/Objects/PipelineItem.h>
 #ifdef _WIN32
 #include <windows.h>
 #endif
@@ -120,14 +121,16 @@ const char* FUNCTION_NAMES[] = {
 	"PluginFunction"
 };
 
+static_assert(ed::pipe::GeometryItem::Count == 8, "Update GEOMETRY_NAMES");
 const char* GEOMETRY_NAMES[] = {
 	"Cube",
 	"ScreenQuad",
 	"Circle",
 	"Triangle",
 	"Sphere",
-	"Plane",
-	"ScreenQuadNDC"
+	"Plane",	
+	"ScreenQuadNDC",
+	"PatchQuad"
 };
 
 const char* PIPELINE_ITEM_NAMES[] = {

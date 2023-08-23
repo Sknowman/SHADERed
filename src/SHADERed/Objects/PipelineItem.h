@@ -176,8 +176,9 @@ namespace ed {
 				Circle,
 				Triangle,
 				Sphere,
-				Plane,
+				Plane,				
 				ScreenQuadNDC,
+				PatchQuad,				// 4 verts, initially drawn as line strip, 2x2, 1 in each axis
 				Count
 			} Type;
 

@@ -178,6 +178,8 @@ namespace ed {
 		case ed::SystemShaderVariable::Time: return "sysTime";
 		case ed::SystemShaderVariable::TimeDelta: return "sysTimeDelta";
 		case ed::SystemShaderVariable::FrameIndex: return "sysFrameIndex";
+		case ed::SystemShaderVariable::Fov: return "sysFov";
+		case ed::SystemShaderVariable::NearFar: return "sysNearFar";
 		case ed::SystemShaderVariable::ViewportSize: return "sysViewportSize";
 		case ed::SystemShaderVariable::View: return "sysView";
 		case ed::SystemShaderVariable::Projection: return "sysProjection";
@@ -568,6 +570,8 @@ namespace ed {
 								initSrc += indent + pName + "_VAO = CreatePlane(" + pName + "_VBO, 1, 1);\n";
 							else if (geo->Type == pipe::GeometryItem::Plane)
 								initSrc += indent + pName + "_VAO = CreatePlane(" + pName + "_VBO, " + std::to_string(geo->Size.x) + "f, " + std::to_string(geo->Size.y) + "f);\n";
+							else if (geo->Type == pipe::GeometryItem::PatchQuad)
+								initSrc += indent + pName + "_VAO = CreatePatchQuad(" + pName + "_VBO, " + std::to_string(geo->Size.x) + "f, " + std::to_string(geo->Size.y) + "f);\n";
 							else if (geo->Type == pipe::GeometryItem::Cube)
 								initSrc += indent + pName + "_VAO = CreateCube(" + pName + "_VBO, " + std::to_string(geo->Size.x) + "f, " + std::to_string(geo->Size.y) + "f, " + std::to_string(geo->Size.z) + "f);\n";
 							initSrc += "\n";

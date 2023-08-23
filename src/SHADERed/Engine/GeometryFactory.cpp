@@ -18,6 +18,7 @@ namespace ed {
 			3,			 /* TRIANGLE */
 			20 * 20 * 6, /* SPHERE */
 			6,			 /* PLANE */
+			4,			/* PATCHQUAD */
 			6,			 /* SCREEQUADNDC */
 		};
 
@@ -393,6 +394,35 @@ namespace ed {
 
 			return vao;
 		}
+
+		unsigned int GeometryFactory::CreatePatchQuad(unsigned int& vbo, float sx, float sy, const std::vector<InputLayoutItem>& inp)
+		{
+			float halfX = sx / 2;
+			float halfZ = sy / 2;
+
+			// clang-format off
+			GLfloat planeData[] = {
+				-halfX, 0.0f, -halfZ,  0.0f, 1.0f, 0.0f,  0.0f, 0.0f,  0,0,1.0f,  1.0f,0,0,  1,1,1,1,
+				halfX, 0.0f, -halfZ,  0.0f, 1.0f, 0.0f,  1.0f, 0.0f,  0,0,1.0f,  1.0f,0,0,  1,1,1,1,
+				halfX, 0.0f, halfZ,  0.0f, 1.0f, 0.0f,  1.0f, 1.0f,  0,0,1.0f,  1.0f,0,0,  1,1,1,1,
+				-halfX, 0.0f, halfZ,  0.0f, 1.0f, 0.0f,  0.0f, 1.0f,  0,0,1.0f,  1.0f,0,0,  1,1,1,1
+			};
+			// clang-format on
+
+			//calcBinormalAndTangents(&planeData[0], 6);
+
+			// create vbo
+			glGenBuffers(1, &vbo);
+			glBindBuffer(GL_ARRAY_BUFFER, vbo);
+			glBufferData(GL_ARRAY_BUFFER, 6 * 18 * sizeof(GLfloat), planeData, GL_STATIC_DRAW);
+			glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+			GLuint vao = 0;
+			gl::CreateVAO(vao, vbo, inp);
+
+			return vao;		
+		}
+
 		unsigned int GeometryFactory::CreateScreenQuadNDC(unsigned int& vbo, const std::vector<InputLayoutItem>& inp)
 		{
 			// clang-format off

@@ -1657,6 +1657,8 @@ namespace ed {
 					tData->VAO = eng::GeometryFactory::CreateTriangle(tData->VBO, tData->Size.x, inpLayout);
 				else if (tData->Type == pipe::GeometryItem::ScreenQuadNDC)
 					tData->VAO = eng::GeometryFactory::CreateScreenQuadNDC(tData->VBO, inpLayout);
+				else if (tData->Type == pipe::GeometryItem::PatchQuad)
+					tData->VAO = eng::GeometryFactory::CreatePatchQuad(tData->VBO, 2, 2, inpLayout);
 			} else if (itemType == ed::PipelineItem::ItemType::Model) {
 				pipe::Model* tData = reinterpret_cast<pipe::Model*>(itemData);
 
@@ -2002,6 +2004,8 @@ namespace ed {
 						tData->VAO = eng::GeometryFactory::CreateTriangle(tData->VBO, tData->Size.x, data->InputLayout);
 					else if (tData->Type == pipe::GeometryItem::ScreenQuadNDC)
 						tData->VAO = eng::GeometryFactory::CreateScreenQuadNDC(tData->VBO, data->InputLayout);
+					else if (tData->Type == pipe::GeometryItem::PatchQuad)
+						tData->VAO = eng::GeometryFactory::CreatePatchQuad(tData->VBO, tData->Size.x, tData->Size.y, data->InputLayout);
 				} else if (itemType == ed::PipelineItem::ItemType::Model) {
 					pipe::Model* tData = reinterpret_cast<pipe::Model*>(itemData);
 

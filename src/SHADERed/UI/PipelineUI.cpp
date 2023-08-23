@@ -1724,6 +1724,10 @@ namespace ed {
 						newData->VAO = eng::GeometryFactory::CreateTriangle(newData->VBO, newData->Size.x, data->InputLayout);
 					else if (newData->Type == pipe::GeometryItem::ScreenQuadNDC)
 						newData->VAO = eng::GeometryFactory::CreateScreenQuadNDC(newData->VBO, data->InputLayout);
+					else if (newData->Type == pipe::GeometryItem::PatchQuad) {					
+						newData->VAO = eng::GeometryFactory::CreatePatchQuad(newData->VBO, 2, 2, data->InputLayout);
+						newData->Topology = GL_LINE_STRIP;
+					}
 
 					itemData = newData;
 				}
@@ -2002,6 +2006,10 @@ namespace ed {
 							newData->VAO = eng::GeometryFactory::CreateTriangle(newData->VBO, newData->Size.x, inpLayout);
 						else if (newData->Type == pipe::GeometryItem::ScreenQuadNDC)
 							newData->VAO = eng::GeometryFactory::CreateScreenQuadNDC(newData->VBO, inpLayout);
+						else if (newData->Type == pipe::GeometryItem::PatchQuad) {
+							newData->VAO = eng::GeometryFactory::CreatePatchQuad(newData->VBO, 2, 2, inpLayout);
+							newData->Topology = GL_LINE_STRIP;
+						}							
 
 						itemData = newData;
 					}

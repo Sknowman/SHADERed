@@ -1007,6 +1007,10 @@ namespace ed {
 					data->VAO = eng::GeometryFactory::CreateTriangle(data->VBO, data->Size.x, ownerData->InputLayout);
 				else if (data->Type == pipe::GeometryItem::ScreenQuadNDC)
 					data->VAO = eng::GeometryFactory::CreateScreenQuadNDC(data->VBO, ownerData->InputLayout);
+				else if (data->Type == pipe::GeometryItem::PatchQuad) {
+					data->VAO = eng::GeometryFactory::CreatePatchQuad(data->VBO, 2, 2, ownerData->InputLayout);
+					data->Topology = GL_LINE_STRIP;
+				}					
 				m_data->Pipeline.AddItem(owner, name.c_str(), item->Type, data);
 			}
 
