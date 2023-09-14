@@ -759,6 +759,8 @@ namespace ed {
 			strcpy(allocatedData->VSEntry, "main");
 			strcpy(allocatedData->PSEntry, "main");
 			strcpy(allocatedData->GSEntry, "main");
+			strcpy(allocatedData->TCSEntry, "main");
+			strcpy(allocatedData->TESEntry, "main");
 			m_item.Data = allocatedData;
 			m_item.Name[0] = 0;
 

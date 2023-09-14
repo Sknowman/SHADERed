@@ -56,10 +56,12 @@ namespace ed {
 
 			glGetActiveUniform(pass, (GLuint)i, bufSize, &length, &size, &type, name);
 
-			if (type == GL_SAMPLER_2D)
-				glUniform1i(glGetUniformLocation(pass, name), samplerLoc++);
-			else
+			if (type == GL_SAMPLER_2D) {
+				const GLint texLocation = glGetUniformLocation(pass, name);
+				glUniform1i(texLocation, samplerLoc++);
+			} else {
 				m_uLocs[name] = glGetUniformLocation(pass, name);
+			}
 		}
 	}
 	void ShaderVariableContainer::UpdateTextureList(const std::string& fragShader)
@@ -87,7 +89,8 @@ namespace ed {
 		if (unit >= m_samplers.size())
 			return;
 
-		glUniform1i(glGetUniformLocation(pass, m_samplers[unit].c_str()), unit);
+		const GLint texLocation = glGetUniformLocation(pass, m_samplers[unit].c_str());
+		glUniform1i(texLocation, unit);
 	}
 	void ShaderVariableContainer::Bind(void* item)
 	{
